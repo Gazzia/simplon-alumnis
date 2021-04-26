@@ -126,7 +126,7 @@
 		padding: 0;
 	}
 	ul.grid li {
-		background-color: #f1f1f1;
+		background-color: #f9f9f9;
 		position: relative;
 		display: flex;
 		flex-direction: column;
@@ -134,9 +134,11 @@
 		justify-content: center;
 		border-radius: 12px;
 		padding: 10px 20px;
-		box-shadow: 0px 2.92443px 7.10219px rgba(0, 0, 0, 0.0503198),
+		/* box-shadow: 0px 2.92443px 7.10219px rgba(0, 0, 0, 0.0503198),
 			0px 1.56354px 3.79717px rgba(0, 0, 0, 0.0417275), 0px 0.876509px 2.12866px rgba(0, 0, 0, 0.035),
-			0px 0.465507px 1.13052px rgba(0, 0, 0, 0.0282725), 0px 0.193708px 0.470434px rgba(0, 0, 0, 0.0196802);
+			0px 0.465507px 1.13052px rgba(0, 0, 0, 0.0282725), 0px 0.193708px 0.470434px rgba(0, 0, 0, 0.0196802); */
+		border: solid #0000000f;
+		border-width: 0 0 1px 1px;
 	}
 	ul.grid li .photoContainer {
 		width: 80px;
