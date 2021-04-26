@@ -2,6 +2,7 @@
 	import firebase from 'firebase/app';
 	import 'firebase/firestore';
 	import {users as alumnis2} from './ocazou';
+	import {fade} from 'svelte/transition';
 
 	var firebaseConfig = {
 		apiKey: 'AIzaSyCGQfjkm9HhqW5On4ehh2O1shWmYw6epwA',
@@ -15,6 +16,8 @@
 	var db = firebase.firestore();
 
 	$: alumnis = [];
+	let modalOpened = null;
+	let clickedAlumni = null;
 
 	// db.collection('alumnis').onSnapshot((sn) => {
 	// 	const newAlumnis = [];
@@ -71,9 +74,15 @@
 					<div class="first" itemprop="givenName">{alumni.prenom}</div>
 					<strong class="last" itemprop="familyName">{alumni.nom}</strong>
 				</div>
-				<button class="button-normal"
-					>Infos ({Object.keys(alumni.contact).filter((k) => alumni.contact[k] != null).length})</button
+				<button
+					class="button-normal"
+					on:click={() => {
+						modalOpened = 'alumniInfo';
+						clickedAlumni = alumni;
+					}}
 				>
+					Infos ({Object.keys(alumni.contact).filter((k) => alumni.contact[k] != null).length})
+				</button>
 				<div class="icons">
 					{#each ['email', 'phone', 'cv', 'address', 'github', 'linkedin', 'discord', 'steam'] as contact}
 						{#if alumni.contact[contact]}
@@ -87,6 +96,80 @@
 		{/each}
 	</ul>
 </main>
+{#if modalOpened == 'alumniInfo'}
+	<div class="modalContainer" transition:fade={{duration: 100}}>
+		<div
+			class="background"
+			on:click={() => {
+				modalOpened = null;
+			}}
+		/>
+		<div class="modal alumniInfo">
+			<aside class="left">
+				<div class="photoContainer">
+					<div class="imageWrapper">
+						{#if clickedAlumni.photoURL?.length > 1}
+							<img
+								src={clickedAlumni.photoURL}
+								alt="Photo de {clickedAlumni.prenom}"
+								itemprop="image"
+							/>
+						{:else}
+							<img src="./assets/default.png" alt="Photo de {clickedAlumni.prenom}" itemprop="image" />
+						{/if}
+					</div>
+					{#if clickedAlumni.searchingForAJob}
+						<div class="jobIcon" data-tooltip="Je cherche un poste !">
+							<svg height="36px" viewBox="0 0 24 24" width="36px" fill="#6732FF"
+								><path d="M0 0h24v24H0V0z" fill="none" /><path
+									d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"
+								/></svg
+							>
+						</div>
+					{/if}
+				</div>
+				<div class="name">
+					<div class="first" itemprop="givenName">{clickedAlumni.prenom}</div>
+					<strong class="last" itemprop="familyName">{clickedAlumni.nom}</strong>
+				</div>
+			</aside>
+			<div class="text">
+				{#each ['email', 'phone', 'cv', 'address', 'github', 'linkedin', 'discord', 'steam'] as contact}
+					{#if clickedAlumni.contact[contact]}
+						<div class="field">
+							<div class="icon" data-info={contact}>
+								<img src="./assets/icons/{contact}.svg" alt={contact} />
+							</div>
+							<div class="value">
+								{#if contact == 'email'}
+									<a href="mailto:{clickedAlumni.contact[contact]}">
+										{clickedAlumni.contact[contact]}
+									</a>
+								{:else if ["cv", "github", "linkedin"].includes(contact)}
+									<a href={clickedAlumni.contact[contact]}>
+										{clickedAlumni.contact[contact]}
+									</a>
+								{:else}
+									{clickedAlumni.contact[contact]}
+								{/if}
+							</div>
+						</div>
+					{/if}
+				{/each}
+			</div>
+		</div>
+	</div>
+{:else if modalOpened == 'login'}
+	<div class="modalContainer" transition:fade={{duration: 100}}>
+		<div
+			class="background"
+			on:click={() => {
+				modalOpened = null;
+			}}
+		/>
+		<div class="modal" />
+	</div>
+{/if}
 
 <style>
 	.blobs {
@@ -131,8 +214,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-		border-radius: 12px;
+		border-radius: 10px;
 		padding: 10px 20px;
 		/* box-shadow: 0px 2.92443px 7.10219px rgba(0, 0, 0, 0.0503198),
 			0px 1.56354px 3.79717px rgba(0, 0, 0, 0.0417275), 0px 0.876509px 2.12866px rgba(0, 0, 0, 0.035),
@@ -140,14 +222,14 @@
 		border: solid #0000000f;
 		border-width: 0 0 1px 1px;
 	}
-	ul.grid li .photoContainer {
+	.photoContainer {
 		width: 80px;
 		height: 80px;
 		position: relative;
 		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.07);
 		border-radius: 12px;
 	}
-	ul.grid li .photoContainer .imageWrapper {
+	.photoContainer .imageWrapper {
 		width: 100%;
 		height: 100%;
 		position: absolute;
@@ -155,11 +237,11 @@
 		border-radius: 12px;
 		background-color: white;
 	}
-	ul.grid li .photoContainer .imageWrapper img {
+	.photoContainer .imageWrapper img {
 		max-width: 100%;
 		max-height: 100%;
 	}
-	ul.grid li .photoContainer .jobIcon {
+	.photoContainer .jobIcon {
 		background-color: white;
 		width: 18px;
 		height: 18px;
@@ -174,11 +256,11 @@
 		border-radius: 50%;
 		z-index: 2;
 	}
-	ul.grid li .name {
+	.name {
 		text-align: center;
 		margin: 7px 0;
 	}
-	ul.grid li .name .last {
+	.name .last {
 		text-transform: uppercase;
 	}
 
@@ -214,5 +296,62 @@
 	button.button-normal:active {
 		transform: scale(0.87);
 		filter: brightness(1.03);
+	}
+	.modalContainer {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 50;
+	}
+	.modalContainer .background {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.212);
+		z-index: 1;
+	}
+	.modalContainer .modal {
+		position: relative;
+		z-index: 2;
+		padding: 20px;
+		background-color: white;
+		border-radius: 12px;
+		box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.02), 0 6.7px 5.3px rgba(0, 0, 0, 0.028),
+			0 12.5px 10px rgba(0, 0, 0, 0.035), 0 22.3px 17.9px rgba(0, 0, 0, 0.042),
+			0 41.8px 33.4px rgba(0, 0, 0, 0.05), 0 100px 80px rgba(0, 0, 0, 0.07);
+	}
+
+	.modal.alumniInfo {
+		display: flex;
+	}
+	.modal.alumniInfo aside.left {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		margin-right: 20px;
+	}
+	.modal.alumniInfo aside.left .photoContainer {
+		height: 150px;
+		width: 150px;
+	}
+	.modal.alumniInfo aside.left .name {
+		margin-bottom: 0;
+	}
+	.modal.alumniInfo .text {
+		display: flex;
+		flex-direction: column;
+	}
+	.modal.alumniInfo .text .field {
+		display: flex;
+	}
+	.modal.alumniInfo .text .field .icon {
+		margin-right: 5px;
 	}
 </style>
