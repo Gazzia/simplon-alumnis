@@ -56,7 +56,12 @@
 		sn.forEach((doc) => {
 			newAlumnis.push(doc.data());
 		});
-		alumnis = newAlumnis.sort((a, b) => !a.searchingForAJob);
+		alumnis = newAlumnis.sort((a, b) => {
+			if (a.searchingForAJob === b.searchingForAJob)
+				return getAlumniFilledContactsLength(b) - getAlumniFilledContactsLength(a);
+			else if (a.searchingForAJob) return -1;
+			else return 1;
+		});
 		console.log(alumnis);
 	});
 
