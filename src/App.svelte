@@ -1,8 +1,12 @@
 <script>
 	import firebase from 'firebase/app';
 	import 'firebase/firestore';
+	import 'firebase/auth';
 	import {users as alumnis2} from './ocazou';
 	import {fade} from 'svelte/transition';
+	import AlumniEdit from './components/AlumniEdit.svelte';
+	import LoginForm from './components/LoginForm.svelte';
+	import {contactProps, publicContactProps, displayContact} from './shared/contactprops';
 
 	var firebaseConfig = {
 		apiKey: 'AIzaSyCGQfjkm9HhqW5On4ehh2O1shWmYw6epwA',
@@ -13,20 +17,56 @@
 		appId: '1:52608283217:web:79fc793d9e14a93c6afe70',
 	};
 	firebase.initializeApp(firebaseConfig);
-	var db = firebase.firestore();
+	const db = firebase.firestore();
+	const auth = firebase.auth();
 
-	$: alumnis = [];
+	let alumnis = [];
 	let modalOpened = null;
 	let clickedAlumni = null;
+	let currentUser = null;
+	$: alumniList = currentUser ? alumnis : alumnis.filter((a) => !a.private);
+	auth.onAuthStateChanged((user) => {
+		if (!user) {
+			currentUser = null;
+		} else {
+			const correspondingUser = alumnis.find((a) => a.id == user.uid);
+			if (correspondingUser) {
+				currentUser = correspondingUser;
+			} else {
+				db.collection('alumnis')
+					.doc(user.uid)
+					.get()
+					.then((data) => {
+						currentUser = data;
+					});
+			}
+		}
+		console.log(currentUser);
+	});
 
-	// db.collection('alumnis').onSnapshot((sn) => {
-	// 	const newAlumnis = [];
-	// 	sn.forEach((doc) => {
-	// 		newAlumnis.push(doc.data());
-	// 	});
-	// 	alumnis = newAlumnis.sort((a, b) => !a.searchingForAJob);
-	// 	console.log(alumnis);
-	// });
+	function disconnect() {
+		auth.signOut();
+	}
+
+	db.collection('alumnis').onSnapshot((sn) => {
+		const newAlumnis = [];
+		sn.forEach((doc) => {
+			newAlumnis.push(doc.data());
+		});
+		alumnis = newAlumnis.sort((a, b) => !a.searchingForAJob);
+		console.log(alumnis);
+	});
+
+	function getAlumniFilledContactsLength(alumni) {
+		return Object.keys(alumni.contact).filter((k) => alumni.contact[k]?.length > 0).length;
+	}
+	function getAlumniFilledPublicContactsLength(alumni) {
+		return Object.keys(alumni.contact).filter((k) => {
+			console.log(k);
+			console.log(publicContactProps.includes(k) && alumni.contact[k]?.length > 0);
+			return publicContactProps.includes(k) && (alumni.contact[k]?.length > 0);
+		}).length;
+	}
 </script>
 
 <div class="blobs">
@@ -48,9 +88,25 @@
 	</svg>
 </div>
 <main>
+	<aside class="topLoginContainer">
+		{#if currentUser}
+			<button class="connect" on:click={disconnect}>Déconnexion</button>
+			<div class="photoContainer">
+				<div class="imageWrapper">
+					{#if currentUser.photoURL?.length > 1}
+						<img src={currentUser.photoURL} alt="" />
+					{:else}
+						<img src="./assets/default.png" alt="" />
+					{/if}
+				</div>
+			</div>
+		{:else}
+			<button class="connect" on:click={() => (modalOpened = 'login')}>Connexion</button>
+		{/if}
+	</aside>
 	<h1>Alumnis Simplon - Java Web</h1>
 	<ul class="grid" in:fade={{delay: 400}}>
-		{#each alumnis2 as alumni}
+		{#each alumniList as alumni}
 			<li itemscope itemtype="https://schema.org/Person">
 				<div class="photoContainer">
 					<div class="imageWrapper">
@@ -80,17 +136,33 @@
 						modalOpened = 'alumniInfo';
 						clickedAlumni = alumni;
 					}}
+					class:editable={currentUser?.id == alumni.id}
 				>
-					Infos ({Object.keys(alumni.contact).filter((k) => alumni.contact[k] != null).length})
+					{#if currentUser?.id == alumni.id}Editer{:else}Infos{/if}
+					{#if currentUser}
+						({getAlumniFilledContactsLength(alumni)})
+					{:else}
+						({getAlumniFilledPublicContactsLength(alumni)})
+					{/if}
 				</button>
 				<div class="icons">
-					{#each ['email', 'phone', 'cv', 'address', 'github', 'linkedin', 'discord', 'steam'] as contact}
-						{#if alumni.contact[contact]}
-							<div class="icon" data-info={contact}>
-								<img src="./assets/icons/{contact}.svg" alt={contact} />
-							</div>
-						{/if}
-					{/each}
+					{#if currentUser}
+						{#each contactProps as contact}
+							{#if alumni.contact[contact]?.length > 0}
+								<div class="icon" data-info={displayContact[contact]}>
+									<img src="./assets/icons/{contact}.svg" alt={contact} />
+								</div>
+							{/if}
+						{/each}
+					{:else}
+						{#each publicContactProps as contact}
+							{#if alumni.contact[contact]?.length > 0}
+								<div class="icon" data-info={displayContact[contact]}>
+									<img src="./assets/icons/{contact}.svg" alt={contact} />
+								</div>
+							{/if}
+						{/each}
+					{/if}
 				</div>
 			</li>
 		{/each}
@@ -98,76 +170,13 @@
 </main>
 {#if modalOpened == 'alumniInfo'}
 	<div class="modalContainer" transition:fade={{duration: 100}}>
-		<div
-			class="background"
-			on:click={() => {
-				modalOpened = null;
-			}}
-		/>
-		<div class="modal alumniInfo">
-			<aside class="left">
-				<div class="photoContainer">
-					<div class="imageWrapper">
-						{#if clickedAlumni.photoURL?.length > 1}
-							<img
-								src={clickedAlumni.photoURL}
-								alt="Photo de {clickedAlumni.prenom}"
-								itemprop="image"
-							/>
-						{:else}
-							<img src="./assets/default.png" alt="Photo de {clickedAlumni.prenom}" itemprop="image" />
-						{/if}
-					</div>
-					{#if clickedAlumni.searchingForAJob}
-						<div class="jobIcon" data-tooltip="Je cherche un poste !">
-							<svg height="36px" viewBox="0 0 24 24" width="36px" fill="#6732FF"
-								><path d="M0 0h24v24H0V0z" fill="none" /><path
-									d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"
-								/></svg
-							>
-						</div>
-					{/if}
-				</div>
-				<div class="name">
-					<div class="first" itemprop="givenName">{clickedAlumni.prenom}</div>
-					<strong class="last" itemprop="familyName">{clickedAlumni.nom}</strong>
-				</div>
-			</aside>
-			<div class="text">
-				{#each ['email', 'phone', 'cv', 'address', 'github', 'linkedin', 'discord', 'steam'] as contact}
-					{#if clickedAlumni.contact[contact]}
-						<div class="field">
-							<div class="icon" data-info={contact}>
-								<img src="./assets/icons/{contact}.svg" alt={contact} />
-							</div>
-							<div class="value">
-								{#if contact == 'email'}
-									<a href="mailto:{clickedAlumni.contact[contact]}">
-										{clickedAlumni.contact[contact]}
-									</a>
-								{:else if ["cv", "github", "linkedin"].includes(contact)}
-									<a href={clickedAlumni.contact[contact]}>
-										{clickedAlumni.contact[contact]}
-									</a>
-								{:else}
-									{clickedAlumni.contact[contact]}
-								{/if}
-							</div>
-						</div>
-					{/if}
-				{/each}
-			</div>
-		</div>
+		<div class="background" on:click={() => (modalOpened = null)} />
+		<AlumniEdit {db} bind:clickedAlumni bind:currentUser bind:modalOpened />
 	</div>
 {:else if modalOpened == 'login'}
 	<div class="modalContainer" transition:fade={{duration: 100}}>
-		<div
-			class="background"
-			on:click={() => {
-				modalOpened = null;
-			}}
-		/>
-		<div class="modal" />
+		<div class="background" on:click={() => (modalOpened = null)} />
+		<LoginForm {auth} bind:modalOpened />
 	</div>
 {/if}
 
@@ -222,47 +231,6 @@
 		border: solid #0000000f;
 		border-width: 0 0 1px 1px;
 	}
-	.photoContainer {
-		width: 80px;
-		height: 80px;
-		position: relative;
-		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.07);
-		border-radius: 12px;
-	}
-	.photoContainer .imageWrapper {
-		width: 100%;
-		height: 100%;
-		position: absolute;
-		overflow: hidden;
-		border-radius: 12px;
-		background-color: white;
-	}
-	.photoContainer .imageWrapper img {
-		max-width: 100%;
-		max-height: 100%;
-	}
-	.photoContainer .jobIcon {
-		background-color: white;
-		width: 18px;
-		height: 18px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		position: absolute;
-		bottom: 4px;
-		right: 5px;
-		box-shadow: 0 2px 2px #00000029;
-		padding: 4px;
-		border-radius: 50%;
-		z-index: 2;
-	}
-	.name {
-		text-align: center;
-		margin: 7px 0;
-	}
-	.name .last {
-		text-transform: uppercase;
-	}
 
 	ul.grid li .icons {
 		margin-top: 5px;
@@ -289,6 +257,9 @@
 		cursor: pointer;
 		transition: 0.2s;
 	}
+	button.button-normal.editable {
+		color: #6732ff;
+	}
 	button.button-normal:hover {
 		transform: scale(0.96);
 		filter: brightness(1.03);
@@ -297,61 +268,38 @@
 		transform: scale(0.87);
 		filter: brightness(1.03);
 	}
-	.modalContainer {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 50;
+	button.connect {
+		background-color: transparent;
+		border: 1px solid white;
+		border-radius: 6px;
+		font-size: 11px;
+		padding: 5px 10px;
+		text-transform: uppercase;
+		letter-spacing: 0.055em;
+		color: white;
+		opacity: 0.7;
+		cursor: pointer;
+		transition: 0.17s;
 	}
-	.modalContainer .background {
+	button.connect:hover {
+		transform: scale(0.96);
+		opacity: 1;
+	}
+	button.connect:active {
+		transform: scale(0.87);
+		opacity: 1;
+	}
+	.topLoginContainer {
 		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0, 0, 0, 0.212);
-		z-index: 1;
-	}
-	.modalContainer .modal {
-		position: relative;
-		z-index: 2;
-		padding: 20px;
-		background-color: white;
-		border-radius: 12px;
-		box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.02), 0 6.7px 5.3px rgba(0, 0, 0, 0.028),
-			0 12.5px 10px rgba(0, 0, 0, 0.035), 0 22.3px 17.9px rgba(0, 0, 0, 0.042),
-			0 41.8px 33.4px rgba(0, 0, 0, 0.05), 0 100px 80px rgba(0, 0, 0, 0.07);
-	}
-
-	.modal.alumniInfo {
+		top: 15px;
+		right: 15px;
+		color: white;
 		display: flex;
-	}
-	.modal.alumniInfo aside.left {
-		display: flex;
-		flex-direction: column;
+		gap: 7px;
 		justify-content: center;
-		margin-right: 20px;
 	}
-	.modal.alumniInfo aside.left .photoContainer {
-		height: 150px;
-		width: 150px;
-	}
-	.modal.alumniInfo aside.left .name {
-		margin-bottom: 0;
-	}
-	.modal.alumniInfo .text {
-		display: flex;
-		flex-direction: column;
-	}
-	.modal.alumniInfo .text .field {
-		display: flex;
-	}
-	.modal.alumniInfo .text .field .icon {
-		margin-right: 5px;
+	.topLoginContainer .photoContainer {
+		height: 25px;
+		width: 25px;
 	}
 </style>

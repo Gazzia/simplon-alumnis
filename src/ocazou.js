@@ -5,6 +5,7 @@ const defaultUser = {
 	private: true,
 	searchingForAJob: false,
 	photoURL: null,
+	genre: "m",
 	contact: {
 		email: null,
 		github: null,
@@ -23,6 +24,8 @@ export const users = [
 		nom: 'Isambert',
 		prenom: 'Franck',
 		searchingForAJob:true,
+		genre: "m",
+		private:true,
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/a3tIaIfsVjQOn9JyLVMVdQvi7WN2.jpg?alt=media&token=0fe2cd36-db7d-4380-ae23-8067559816a9',
 		contact: {
@@ -34,6 +37,8 @@ export const users = [
 		nom: 'Chevalier',
 		prenom: 'Mariana',
 		searchingForAJob:true,
+		genre: "f",
+		private:true,
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/3oEdcnCVNHbKwlhQiW1bf2ttC3V2.jpg?alt=media&token=bf959ce7-5ee2-4f61-a79f-260360773ba1',
 		contact: {
@@ -44,6 +49,7 @@ export const users = [
 		id: 'bOkg6WL9UpZRZVyyFyJClsV7ikW2',
 		nom: 'Epiard',
 		prenom: 'Elodie',
+		genre: "f",
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/bOkg6WL9UpZRZVyyFyJClsV7ikW2.jpg?alt=media&token=dc276103-f329-48da-ad0f-560a5ebe6af3',
 		contact: {
@@ -55,6 +61,7 @@ export const users = [
 		nom: 'Hurtis',
 		prenom: 'Aurèle',
 		searchingForAJob:true,
+		genre: "m",
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/hkhlTGjDsUXXY5mXvtAsd2R0xAm2.jpg?alt=media&token=587b8fc9-33b9-48c8-989c-e62617ea674f',
 		contact: {
@@ -65,6 +72,7 @@ export const users = [
 		id: 'AofwxGqM4Lf352IX9H78vwxlHE32',
 		nom: 'Silva',
 		prenom: 'Marvin',
+		genre: "m",
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/AofwxGqM4Lf352IX9H78vwxlHE32.jpg?alt=media&token=c0112037-8d27-4149-b3d4-7c7d5524e8b8',
 		contact: {
@@ -75,8 +83,10 @@ export const users = [
 		id: 'TR3G9JiGZCgyHBfwsJLu5BWeHN42',
 		nom: 'Le Duc',
 		prenom: 'Vivien',
+		private:true,
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/TR3G9JiGZCgyHBfwsJLu5BWeHN42.jpg?alt=media&token=a0073893-5869-4de9-82e8-9c6ae74f0c65',
+			genre: "m",
 		contact: {
 			email: 'leducvivien@gmail.com',
 		},
@@ -87,6 +97,7 @@ export const users = [
 		prenom: 'Amin',
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/TsSQvKWmykcNDKx2TAyv72QGXLN2.jpg?alt=media&token=8713eed7-f4b8-4a9f-9270-d2b951d339de',
+			genre: "m",
 		contact: {
 			email: 'amin.sehla2020@gmail.com',
 		},
@@ -95,6 +106,7 @@ export const users = [
 		id: 'oMUSAEfX6gVDdnJJCwYPwp4qYoi2',
 		nom: 'Stempin',
 		prenom: 'Matthieu',
+		genre: "m",
 		contact: {
 			email: 'stempin.matthieu@gmail.com',
 		},
@@ -105,6 +117,7 @@ export const users = [
 		prenom: 'Alexandre',
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/MNFodJGgnBPjvZZWXN1ZjYRGrzk1.jpg?alt=media&token=85b9f7fb-d714-44a5-8407-a3877c79a61f',
+			genre: "m",
 		contact: {
 			email: 'a.blache@gmail.com',
 		},
@@ -115,6 +128,7 @@ export const users = [
 		prenom: 'Trystan',
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/vNmmpraPOBPxO5EJYlE38VK0LvD3.jpg?alt=media&token=90d58611-0f2f-42c3-813c-2ad6cff292c9',
+			genre: "m",
 		contact: {
 			email: 'trystan.valentin@gmail.com',
 		},
@@ -123,6 +137,8 @@ export const users = [
 		id: 'Cbrs0FaoZoX0cXpICaCu0L6ZwYt1',
 		nom: 'Lajdecki',
 		prenom: 'Yannick',
+		private:true,
+		genre: "m",
 		contact: {
 			email: 'lajdecki.yannick.simplon@gmail.com',
 		},
@@ -133,6 +149,8 @@ export const users = [
 		prenom: 'Romain',
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/9NoKFDBjnDhMSxiqqAHInFF881u2.jpg?alt=media&token=fdf1ac53-ac79-40ec-9d5e-ca3449a01f57',
+			genre: "m",
+			private:true,
 		contact: {
 			email: 'romaingreaume@gmail.com',
 		},
@@ -141,8 +159,10 @@ export const users = [
 		id: 'PclVh053x6TNFzKONJRT2VhBqSE3',
 		nom: 'Bignon',
 		prenom: 'Lucas',
+		private:true,
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/PclVh053x6TNFzKONJRT2VhBqSE3.jpg?alt=media&token=7481c2c5-14e9-4331-937e-3c13d9090735',
+			genre: "m",
 		contact: {
 			email: 'bignonlucas.contact@gmail.com',
 		},
@@ -151,8 +171,10 @@ export const users = [
 		id: 'v0xHYvdId8NCHBRez2vmtvcg62y1',
 		nom: 'Chasles',
 		prenom: 'Gino',
+		private:true,
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/v0xHYvdId8NCHBRez2vmtvcg62y1.jpg?alt=media&token=79d1b38f-39c9-4ad5-9bb4-d6db5b53f95b',
+			genre: "m",
 		contact: {
 			email: 'gino.chasles@gmail.com',
 		},
@@ -163,6 +185,7 @@ export const users = [
 		prenom: 'Joseph',
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/3eVQcOJSPeOIqL3LjUmk1v6OAMU2.jpg?alt=media&token=04126556-65b4-474f-b112-7e3f3ae32cb3',
+			genre: "m",
 		contact: {
 			email: 'joseph.allain24@gmail.com',
 			cv: "https://cv.jallain.fr",
@@ -178,8 +201,10 @@ export const users = [
 		id: 'RDtdDHlrmQhV0PIkdLg2EW1d0WE3',
 		nom: 'Rahmani',
 		prenom: 'Yasmina',
+		private:true,
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/RDtdDHlrmQhV0PIkdLg2EW1d0WE3.jpg?alt=media&token=5a8ba9e4-e8e3-4ce9-9be7-539ddcf309d3',
+			genre: "f",
 		contact: {
 			email: 'yasmina.rahmani@gmail.com',
 		},
@@ -188,8 +213,10 @@ export const users = [
 		id: 'u4FzVM59uEMcTrXfgdFrOZN0G973',
 		nom: 'Huber',
 		prenom: 'Aurélie',
+		private:true,
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/u4FzVM59uEMcTrXfgdFrOZN0G973.jpg?alt=media&token=d4fec9e3-4d63-449b-9a64-0ab191ed516c',
+			genre: "f",
 		contact: {
 			email: 'aureliehuber2020@gmail.com',
 		},
@@ -200,6 +227,7 @@ export const users = [
 		prenom: 'Kévin',
 		photoURL:
 			'https://firebasestorage.googleapis.com/v0/b/alumni-simplon.appspot.com/o/4tDY0ZXaugXIS4RI1wRMBM9Ninz1.jpg?alt=media&token=4dddbf6f-18c8-4816-841b-903cd617e922',
+			genre: "m",
 		contact: {
 			email: 'kevin.deveza@gmail.com',
 		},
@@ -208,6 +236,8 @@ export const users = [
 		id: 's8GLkTr4jYYDpsLMTWyyWCoNf1Q2',
 		nom: 'Bezzaz',
 		prenom: 'Noemie',
+		private:true,
+		genre: "f",
 		contact: {
 			email: 'noemie.b.contact@gmail.com',
 		},
@@ -216,6 +246,8 @@ export const users = [
 		id: 'ywhROLcet2SwyxChEYGC9UDgmMz1',
 		nom: 'Damene',
 		prenom: 'Hamza',
+		private:true,
+		genre: "m",
 		contact: {
 			email: 'damenehamza4@gmail.com',
 		},

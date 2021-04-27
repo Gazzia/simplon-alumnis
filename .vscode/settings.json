@@ -8,5 +8,6 @@
 		"titleBar.inactiveBackground": "#1b213699",
 		"titleBar.inactiveForeground": "#e7e7e799"
 	},
-	"peacock.color": "#1b2136"
+	"peacock.color": "#1b2136",
+	"AllAutocomplete.showCurrentDocument": false
 }

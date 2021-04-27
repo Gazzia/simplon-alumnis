@@ -12,6 +12,10 @@ body {
 	font-family: 'Nunito Sans';
 }
 
+body.fixed{
+	overflow: hidden;
+}
+
 a {
 	color: rgb(0,100,200);
 	text-decoration: none;
@@ -175,4 +179,79 @@ button:focus {
 	visibility: visible;
 	opacity: 1;
 	transform: translate(-50%, 0);
+}
+
+.modal {
+	position: relative;
+	z-index: 2;
+	padding: 20px;
+	background-color: white;
+	border-radius: 12px;
+	box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.02), 0 6.7px 5.3px rgba(0, 0, 0, 0.028),
+		0 12.5px 10px rgba(0, 0, 0, 0.035), 0 22.3px 17.9px rgba(0, 0, 0, 0.042),
+		0 41.8px 33.4px rgba(0, 0, 0, 0.05), 0 100px 80px rgba(0, 0, 0, 0.07);
+}
+
+.modalContainer {
+	position: fixed;
+	overflow:auto;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 50;
+}
+.modalContainer .background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.212);
+	z-index: 1;
+}
+
+.photoContainer {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.07);
+	border-radius: 12px;
+}
+.photoContainer .imageWrapper {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	overflow: hidden;
+	border-radius: 12px;
+	background-color: white;
+}
+.photoContainer .imageWrapper img {
+	max-width: 100%;
+	max-height: 100%;
+}
+.photoContainer .jobIcon {
+	background-color: white;
+	width: 18px;
+	height: 18px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	bottom: 4px;
+	right: 5px;
+	box-shadow: 0 2px 2px #00000029;
+	padding: 4px;
+	border-radius: 50%;
+	z-index: 2;
+}
+.name {
+	text-align: center;
+	margin: 7px 0;
+}
+.name .last {
+	text-transform: uppercase;
 }
