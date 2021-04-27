@@ -142,7 +142,6 @@
 		display: flex;
 		display: flex;
 		align-items: center;
-		justify-content: center;
 	}
 	.modal.alumniInfo .text .field .icon {
 		margin-right: 5px;
