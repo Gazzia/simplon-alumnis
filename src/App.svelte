@@ -26,7 +26,7 @@
 	let alumnis = [];
 	let modalOpened = null;
 	let clickedAlumni = null;
-	let currentUser = null;
+	$: currentUser = null;
 	$: alumniList = currentUser ? alumnis : alumnis.filter((a) => !a.private);
 	auth.onAuthStateChanged((user) => {
 		if (!user) {
@@ -44,7 +44,6 @@
 					});
 			}
 		}
-		console.log(currentUser);
 	});
 
 	function disconnect() {
@@ -62,7 +61,6 @@
 			else if (a.searchingForAJob) return -1;
 			else return 1;
 		});
-		console.log(alumnis);
 	});
 
 	function getAlumniFilledContactsLength(alumni) {
@@ -70,8 +68,6 @@
 	}
 	function getAlumniFilledPublicContactsLength(alumni) {
 		return Object.keys(alumni.contact).filter((k) => {
-			console.log(k);
-			console.log(publicContactProps.includes(k) && alumni.contact[k]?.length > 0);
 			return publicContactProps.includes(k) && alumni.contact[k]?.length > 0;
 		}).length;
 	}

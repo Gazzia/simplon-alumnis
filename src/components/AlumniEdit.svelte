@@ -12,7 +12,6 @@
 			.doc(editedUser.id)
 			.update(editedUser)
 			.then((res) => {
-				console.log('🚀 ~ db.collection ~ res', res);
 				modalOpened = false;
 			})
 			.catch((err) => {
