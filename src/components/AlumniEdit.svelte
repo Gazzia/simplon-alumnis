@@ -20,6 +20,23 @@
 			});
 	}
 
+	
+
+export const getValidUrl = (url = "") => {
+    let newUrl = window.decodeURIComponent(url);
+    newUrl = newUrl.trim().replace(/\s/g, "");
+
+    if(/^(:\/\/)/.test(newUrl)){
+        return `http${newUrl}`;
+    }
+    if(!/^(f|ht)tps?:\/\//i.test(newUrl)){
+        return `http://${newUrl}`;
+    }
+
+    return newUrl;
+};
+
+
 	function flipPrivate() {
 		editedUser.private = !editedUser.private;
 	}
@@ -90,7 +107,7 @@
 										{clickedAlumni.contact[contact]}
 									</a>
 								{:else if ['cv', 'github', 'linkedin'].includes(contact)}
-									<a href={clickedAlumni.contact[contact]}>
+									<a href={getValidUrl(clickedAlumni.contact[contact])}>
 										{clickedAlumni.contact[contact]}
 									</a>
 								{:else}
