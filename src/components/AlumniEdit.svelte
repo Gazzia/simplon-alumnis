@@ -19,22 +19,19 @@
 			});
 	}
 
-	
+	export const getValidUrl = (url = '') => {
+		let newUrl = window.decodeURIComponent(url);
+		newUrl = newUrl.trim().replace(/\s/g, '');
 
-export const getValidUrl = (url = "") => {
-    let newUrl = window.decodeURIComponent(url);
-    newUrl = newUrl.trim().replace(/\s/g, "");
+		if (/^(:\/\/)/.test(newUrl)) {
+			return `http${newUrl}`;
+		}
+		if (!/^(f|ht)tps?:\/\//i.test(newUrl)) {
+			return `http://${newUrl}`;
+		}
 
-    if(/^(:\/\/)/.test(newUrl)){
-        return `http${newUrl}`;
-    }
-    if(!/^(f|ht)tps?:\/\//i.test(newUrl)){
-        return `http://${newUrl}`;
-    }
-
-    return newUrl;
-};
-
+		return newUrl;
+	};
 
 	function flipPrivate() {
 		editedUser.private = !editedUser.private;
@@ -93,36 +90,30 @@ export const getValidUrl = (url = "") => {
 						<input type="text" bind:value={editedUser.contact[contact]} />
 					{/if}
 				</div>
-			{:else}
-				<div>
-					{#if clickedAlumni.contact[contact]?.length > 0 && (currentUser || publicContactProps.includes(contact))}
-						<div class="field">
-							<div class="icon" data-info={displayContact[contact]}>
-								<img src="./assets/icons/{contact}.svg" alt={contact} />
-							</div>
-							<div class="value">
-								{#if contact == 'email'}
-									<a href="mailto:{clickedAlumni.contact[contact]}">
-										{clickedAlumni.contact[contact]}
-									</a>
-								{:else if ['cv', 'github', 'linkedin'].includes(contact)}
-									<a href={getValidUrl(clickedAlumni.contact[contact])}>
-										{clickedAlumni.contact[contact]}
-									</a>
-								{:else}
-									{clickedAlumni.contact[contact]}
-								{/if}
-							</div>
-						</div>
-					{/if}
+			{:else if !isCurrentUser && clickedAlumni.contact[contact]?.length > 0 && (currentUser || publicContactProps.includes(contact))}
+				<div class="field">
+					<div class="icon" data-info={displayContact[contact]}>
+						<img src="./assets/icons/{contact}.svg" alt={contact} />
+					</div>
+					<div class="value">
+						{#if contact == 'email'}
+							<a href="mailto:{clickedAlumni.contact[contact]}">
+								{clickedAlumni.contact[contact]}
+							</a>
+						{:else if ['cv', 'github', 'linkedin'].includes(contact)}
+							<a href={getValidUrl(clickedAlumni.contact[contact])}>
+								{clickedAlumni.contact[contact]}
+							</a>
+						{:else}
+							{clickedAlumni.contact[contact]}
+						{/if}
+					</div>
 				</div>
 			{/if}
 		{/each}
 		{#if isCurrentUser}
 			<button on:click={parseAndPost}>Valider</button>
-			<div class="explanations">
-				* Données publiques: email, cv, github, linkedin, technos, divers
-			</div>
+			<div class="explanations">* Données publiques: email, cv, github, linkedin, technos, divers</div>
 		{/if}
 	</div>
 </div>
@@ -156,14 +147,21 @@ export const getValidUrl = (url = "") => {
 	}
 	.modal.alumniInfo .text .field {
 		display: flex;
-		display: flex;
-		align-items: center;
+		align-items: flex-start;
+	}
+	.modal.alumniInfo .text .field + .field {
+		margin-top: 5px;
 	}
 	.modal.alumniInfo .text .field .icon {
-		margin-right: 5px;
+		margin-right: 8px;
+		padding-top: 2px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	.modal.alumniInfo .text .field .value {
+		white-space: pre-wrap;
 	}
 
 	.editionField {
@@ -178,7 +176,7 @@ export const getValidUrl = (url = "") => {
 	.radios {
 		margin-bottom: 20px;
 		display: flex;
-		flex-direction:column;
+		flex-direction: column;
 		gap: 6px;
 	}
 	.radio {
@@ -201,7 +199,7 @@ export const getValidUrl = (url = "") => {
 	.radio.checked::before {
 		background-color: #6732ff;
 	}
-	.explanations{
+	.explanations {
 		font-size: 12px;
 		opacity: 0.7;
 	}
