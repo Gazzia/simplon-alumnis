@@ -108,6 +108,7 @@
 		{/if}
 	</aside>
 	<h1>Alumnis Simplon - Java Web</h1>
+	<h2>Profils publics</h2>
 	<ul class="grid" in:fade={{delay: 400}}>
 		{#each alumniList as alumni}
 			<li itemscope itemtype="https://schema.org/Person">
@@ -208,11 +209,21 @@
 		padding: 20px 7vw;
 		z-index: 2;
 	}
-	h1 {
+	h1,
+	h2 {
 		color: #fa2358;
 		letter-spacing: 0.055em;
 		font-weight: bold;
 		text-shadow: 1px 0px 0px white, -1px 0px 0px white, 0px 1px 0px white, 0px -1px 0px white;
+	}
+	h1 {
+		margin-bottom: 2px;
+	}
+	h2 {
+		margin-top: 0;
+		font-size: 14px;
+		text-transform: uppercase;
+		font-weight: normal;
 	}
 	ul.grid {
 		display: grid;
