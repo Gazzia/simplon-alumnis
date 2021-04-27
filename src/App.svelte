@@ -28,6 +28,7 @@
 	let clickedAlumni = null;
 	$: currentUser = null;
 	$: alumniList = currentUser ? alumnis : alumnis.filter((a) => !a.private);
+	$: console.log(currentUser)
 	auth.onAuthStateChanged((user) => {
 		if (!user) {
 			currentUser = null;
@@ -39,8 +40,8 @@
 				db.collection('alumnis')
 					.doc(user.uid)
 					.get()
-					.then((data) => {
-						currentUser = data;
+					.then((doc) => {
+						currentUser = doc.data();
 					});
 			}
 		}
