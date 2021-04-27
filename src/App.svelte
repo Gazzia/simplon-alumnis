@@ -49,7 +49,7 @@
 </div>
 <main>
 	<h1>Alumnis Simplon - Java Web</h1>
-	<ul class="grid">
+	<ul class="grid" in:fade={{delay: 400}}>
 		{#each alumnis2 as alumni}
 			<li itemscope itemtype="https://schema.org/Person">
 				<div class="photoContainer">

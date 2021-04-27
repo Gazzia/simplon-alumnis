@@ -1,7 +1,7 @@
 html, body {
 	position: relative;
 	width: 100%;
-	min-height: 100%;
+	min-height: 100vh;
 }
 
 body {
@@ -104,8 +104,8 @@ button:focus {
 	bottom: 100%;
 	left: 50%;
 	width: 0;
-	border-top: 5px solid #000;
-	border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+	border-top: 5px solid #6732ff;
+	border-top: 5px solid hsla(256, 100%, 60%, 0.9);
 	border-right: 5px solid transparent;
 	border-left: 5px solid transparent;
 	content: ' ';
