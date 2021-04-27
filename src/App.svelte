@@ -108,7 +108,11 @@
 		{/if}
 	</aside>
 	<h1>Alumnis Simplon - Java Web</h1>
-	<h2>Profils publics</h2>
+	{#if !currentUser}
+		<h2>Profils publics</h2>
+	{:else}
+		<h2>Tous les profils</h2>
+	{/if}
 	<ul class="grid" in:fade={{delay: 400}}>
 		{#each alumniList as alumni}
 			<li itemscope itemtype="https://schema.org/Person">
