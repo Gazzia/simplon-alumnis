@@ -200,7 +200,7 @@
 		color: #fa2358;
 		letter-spacing: 0.055em;
 		font-weight: bold;
-		text-shadow: 1px 0px 1px white, -1px 0px 1px white, 0px 1px 1px white, 0px -1px 1px white;
+		text-shadow: 1px 0px 0px white, -1px 0px 0px white, 0px 1px 0px white, 0px -1px 0px white;
 	}
 	ul.grid {
 		display: grid;
