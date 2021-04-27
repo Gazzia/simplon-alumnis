@@ -297,7 +297,7 @@
 		text-transform: uppercase;
 		letter-spacing: 0.055em;
 		color: white;
-		opacity: 0.7;
+		opacity: 0.9;
 		cursor: pointer;
 		transition: 0.17s;
 	}
