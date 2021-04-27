@@ -167,11 +167,26 @@
 	.editionField {
 		display: flex;
 		flex-direction: column;
-		gap: 4px;
+		gap: 2px;
+	}
+	.editionField + .editionField {
+		margin-top: 5px;
 	}
 	.editionField .labelWrapper {
 		display: flex;
 		gap: 4px;
+		font-size: 12px;
+		text-transform: uppercase;
+	}
+	.editionField input {
+		background-color: #f3f3f3;
+		border: none;
+		padding: 9px 13px;
+		border-radius: 6px;
+		font-size: 15px;
+	}
+	.editionField .labelWrapper .label {
+		padding-top: 2px;
 	}
 	.radios {
 		margin-bottom: 20px;
