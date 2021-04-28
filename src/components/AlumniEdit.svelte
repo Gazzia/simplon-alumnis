@@ -8,8 +8,7 @@
 	$: isCurrentUser = currentUser && currentUser.id == clickedAlumni.id;
 	$: editedUser = Object.assign({}, clickedAlumni);
 	$: files = [];
-	$: newPhotoUrl = null;
-	$: canValidate = files ? newPhotoUrl != null : true;
+	$: canValidate = files.length > 0 ? false : true;
 
 	function parseAndPost() {
 		db.collection('alumnis')
@@ -59,7 +58,7 @@
 					.then((url) => {
 						console.log('URL got');
 						editedUser.photoURL = url;
-						newPhotoUrl = url;
+						files = [];
 					})
 					.catch((err) => {
 						console.error(error);
@@ -74,9 +73,7 @@
 		<div class="photoContainer">
 			<div class="imageWrapper">
 				{#if isCurrentUser}
-					{#if newPhotoUrl?.length > 1}
-						<img src={newPhotoUrl} alt="Photo de {editedUser.prenom}" itemprop="image" />
-					{:else if editedUser.photoURL?.length > 1}
+					{#if editedUser.photoURL?.length > 1}
 						<img src={editedUser.photoURL} alt="Photo de {editedUser.prenom}" itemprop="image" />
 					{:else}
 						<img src="./assets/default.png" alt="Photo de {editedUser.prenom}" itemprop="image" />
