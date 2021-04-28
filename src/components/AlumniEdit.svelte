@@ -104,6 +104,10 @@
 							<a href={getValidUrl(clickedAlumni.contact[contact])}>
 								{clickedAlumni.contact[contact]}
 							</a>
+						{:else if contact == "steam"}
+							<a href={getValidUrl("steamcommunity.com/id/"+clickedAlumni.contact[contact])}>
+								{clickedAlumni.contact[contact]}
+							</a>
 						{:else}
 							{clickedAlumni.contact[contact]}
 						{/if}

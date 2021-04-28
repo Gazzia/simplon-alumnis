@@ -20,7 +20,7 @@ export const displayContact = {
 	github: 'URL Github',
 	linkedin: 'URL LinkedIn',
 	discord: 'Pseudo Discord',
-	steam: 'Pseudo Steam',
+	steam: 'ID Steam',
 	stack: 'Technos préférées',
 	other: 'Informations diverses',
 };
