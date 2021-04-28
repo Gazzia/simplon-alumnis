@@ -9,6 +9,7 @@
 	$: editedUser = Object.assign({}, clickedAlumni);
 	$: files = [];
 	$: canValidate = files.length > 0 ? false : true;
+	$: if(files > 0) uploadPicture();
 
 	function parseAndPost() {
 		db.collection('alumnis')
@@ -61,7 +62,7 @@
 						files = [];
 					})
 					.catch((err) => {
-						console.error(error);
+						console.error(err);
 					});
 			}
 		);
@@ -91,7 +92,6 @@
 							type="file"
 							accept="image/png, image/jpeg, image/webp"
 							bind:files
-							on:change={uploadPicture}
 						/>
 						<label for="my-file" class="input-file-trigger" tabindex="0"> Modifier... </label>
 					</div>
