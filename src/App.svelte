@@ -2,6 +2,8 @@
 	import firebase from 'firebase/app';
 	import 'firebase/firestore';
 	import 'firebase/auth';
+	import 'firebase/storage';
+	
 	import {users as alumnis2} from './ocazou';
 	import {fade} from 'svelte/transition';
 	import AlumniEdit from './components/AlumniEdit.svelte';
@@ -19,13 +21,14 @@
 	firebase.initializeApp(firebaseConfig);
 	const db = firebase.firestore();
 	const auth = firebase.auth();
+	const bucket = firebase.storage().ref();
+
 
 	let alumnis = [];
 	let modalOpened = null;
 	let clickedAlumni = null;
 	$: currentUser = null;
 	$: alumniList = currentUser ? alumnis : alumnis.filter((a) => !a.private);
-	$: console.log(currentUser)
 	auth.onAuthStateChanged((user) => {
 		if (!user) {
 			currentUser = null;
@@ -178,7 +181,7 @@
 {#if modalOpened == 'alumniInfo'}
 	<div class="modalContainer" transition:fade={{duration: 100}}>
 		<div class="background" on:click={() => (modalOpened = null)} />
-		<AlumniEdit {db} bind:clickedAlumni bind:currentUser bind:modalOpened />
+		<AlumniEdit {db} {bucket} bind:clickedAlumni bind:currentUser bind:modalOpened />
 	</div>
 {:else if modalOpened == 'login'}
 	<div class="modalContainer" transition:fade={{duration: 100}}>

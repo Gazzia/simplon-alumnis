@@ -4,8 +4,11 @@
 	export let currentUser;
 	export let modalOpened;
 	export let db;
+	export let bucket;
 	$: isCurrentUser = currentUser && currentUser.id == clickedAlumni.id;
 	$: editedUser = Object.assign({}, clickedAlumni);
+	$: files = [];
+	$: newPhotoUrl = null;
 
 	function parseAndPost() {
 		db.collection('alumnis')
@@ -39,16 +42,61 @@
 	function flipJob() {
 		editedUser.searchingForAJob = !editedUser.searchingForAJob;
 	}
+
+	function uploadPicture() {
+		let uploadTask = bucket.child(editedUser.id + '.jpg').put(files[0]);
+		uploadTask.on(
+			'state_changed',
+			() => {},
+			(err) => {
+				console.error(err);
+			},
+			() => {
+				bucket
+					.child(editedUser.id + '_250x250.webp')
+					.getDownloadURL()
+					.then((url) => {
+						console.log('URL got');
+						editedUser.photoURL = url;
+						newPhotoUrl = url;
+					})
+					.catch((err) => {
+						console.error(error);
+					});
+			}
+		);
+	}
 </script>
 
 <div class="modal alumniInfo">
 	<aside class="left">
 		<div class="photoContainer">
 			<div class="imageWrapper">
-				{#if clickedAlumni.photoURL?.length > 1}
+				{#if isCurrentUser}
+					{#if newPhotoUrl?.length > 1}
+						<img src={newPhotoUrl} alt="Photo de {editedUser.prenom}" itemprop="image" />
+					{:else if editedUser.photoURL?.length > 1}
+						<img src={editedUser.photoURL} alt="Photo de {editedUser.prenom}" itemprop="image" />
+					{:else}
+						<img src="./assets/default.png" alt="Photo de {editedUser.prenom}" itemprop="image" />
+					{/if}
+				{:else if clickedAlumni.photoURL?.length > 1}
 					<img src={clickedAlumni.photoURL} alt="Photo de {clickedAlumni.prenom}" itemprop="image" />
 				{:else}
 					<img src="./assets/default.png" alt="Photo de {clickedAlumni.prenom}" itemprop="image" />
+				{/if}
+				{#if isCurrentUser}
+					<div class="input-file-container">
+						<input
+							class="input-file"
+							id="my-file"
+							type="file"
+							accept="image/png, image/jpeg, image/webp"
+							bind:files
+							on:change={uploadPicture}
+						/>
+						<label for="my-file" class="input-file-trigger" tabindex="0"> Modifier... </label>
+					</div>
 				{/if}
 			</div>
 			{#if clickedAlumni.searchingForAJob}
@@ -69,7 +117,10 @@
 	<div class="text">
 		{#if isCurrentUser}
 			<div class="radios">
-				<div class="radio" class:checked={!editedUser.private} on:click={flipPrivate}>Profil public<div class="precisions" data-info="Email, cv, github, linkedin, technos, divers">*</div></div>
+				<div class="radio" class:checked={!editedUser.private} on:click={flipPrivate}>
+					Profil public
+					<div class="precisions" data-info="Email, cv, github, linkedin, technos, divers">*</div>
+				</div>
 				<div class="radio" class:checked={editedUser.searchingForAJob} on:click={flipJob}>
 					Je cherche un taff
 				</div>
@@ -104,8 +155,8 @@
 							<a href={getValidUrl(clickedAlumni.contact[contact])}>
 								{clickedAlumni.contact[contact]}
 							</a>
-						{:else if contact == "steam"}
-							<a href={getValidUrl("steamcommunity.com/id/"+clickedAlumni.contact[contact])}>
+						{:else if contact == 'steam'}
+							<a href={getValidUrl('steamcommunity.com/id/' + clickedAlumni.contact[contact])}>
 								{clickedAlumni.contact[contact]}
 							</a>
 						{:else}
@@ -117,7 +168,9 @@
 		{/each}
 		{#if isCurrentUser}
 			<button on:click={parseAndPost}>Valider</button>
-			<div class="explanations">* Données publiques pour employeurs: email, cv, github, linkedin, technos, divers</div>
+			<div class="explanations">
+				* Données publiques pour employeurs: email, cv, github, linkedin, technos, divers
+			</div>
 		{/if}
 	</div>
 </div>
@@ -142,6 +195,51 @@
 		height: 150px;
 		width: 150px;
 	}
+
+	.photoContainer .input-file-container {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		z-index: 2;
+		top: 0;
+		left: 0;
+		display: flex;
+		align-items: flex-end;
+	}
+
+	.photoContainer .input-file-trigger {
+		padding: 20px 10px;
+		background: #47474791;
+		color: #fff;
+		font-size: 1em;
+		transition: all 0.4s;
+		cursor: pointer;
+		opacity: 0;
+		width: 100%;
+		box-sizing: border-box;
+		display: flex;
+		justify-content: center;
+	}
+
+	.photoContainer .input-file {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		padding: 14px 0;
+		opacity: 0;
+		cursor: pointer;
+		height: 100%;
+	}
+
+	/* quelques styles d'interactions */
+	.photoContainer .input-file:hover + .input-file-trigger,
+	.photoContainer .input-file:focus + .input-file-trigger,
+	.photoContainer .input-file-trigger:hover,
+	.photoContainer .input-file-trigger:focus {
+		opacity: 1;
+	}
+
 	.modal.alumniInfo aside .name {
 		margin-bottom: 0;
 	}
@@ -202,9 +300,7 @@
 		text-transform: uppercase;
 		font-size: 14px;
 		letter-spacing: 0.055em;
-		display: flex;
-		align-items: center;
-		gap: 11px;
+		display: inline-block;
 	}
 	.radio::before {
 		content: '';
@@ -214,17 +310,26 @@
 		border-radius: 4px;
 		border: 1px solid #6732ff;
 		transition: 0.17s;
+		display: inline-block;
+		margin-bottom: -6px;
+		margin-right: 9px;
 	}
 	.radio.checked::before {
 		background-color: #6732ff;
+	}
+	.radio * {
+		flex-grow: 1;
+		flex-wrap: nowrap;
 	}
 	.explanations {
 		font-size: 12px;
 		opacity: 0.7;
 	}
-	.precisions{
-		margin-left:-5px;
+	.precisions {
+		margin-left: -5px;
 		font-weight: bold;
 		color: #6732ff;
+		display: inline;
+		margin-left: 5px;
 	}
 </style>
