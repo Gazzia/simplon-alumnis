@@ -219,6 +219,7 @@
 		box-sizing: border-box;
 		display: flex;
 		justify-content: center;
+		z-index: 2;
 	}
 
 	.photoContainer .input-file {
@@ -230,6 +231,7 @@
 		opacity: 0;
 		cursor: pointer;
 		height: 100%;
+		z-index: 1;
 	}
 
 	/* quelques styles d'interactions */
