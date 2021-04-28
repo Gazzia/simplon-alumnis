@@ -182,12 +182,10 @@
 		justify-content: center;
 		overflow: auto;
 		gap: 20px;
-		align-items: center;
 	}
 	.modal.alumniInfo aside {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
 	}
 	.modal.alumniInfo aside .photoContainer {
 		height: 150px;
