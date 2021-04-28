@@ -9,7 +9,7 @@
 	$: editedUser = Object.assign({}, clickedAlumni);
 	$: files = [];
 	$: canValidate = files.length > 0 ? false : true;
-	$: if(files > 0) uploadPicture();
+	$: if(files.length > 0) uploadPicture();
 
 	function parseAndPost() {
 		db.collection('alumnis')
