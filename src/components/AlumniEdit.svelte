@@ -1,5 +1,7 @@
 <script>
 	import {contactProps, displayContact, publicContactProps} from '../shared/contactprops';
+	import JobIcon from "./JobIcon.svelte"
+	import Photo from './Photo.svelte';
 	export let clickedAlumni;
 	export let currentUser;
 	export let modalOpened;
@@ -72,40 +74,12 @@
 <div class="modal alumniInfo">
 	<aside class="left">
 		<div class="photoContainer">
-			<div class="imageWrapper">
-				{#if isCurrentUser}
-					{#if editedUser.photoURL?.length > 1}
-						<img src={editedUser.photoURL} alt="Photo de {editedUser.prenom}" itemprop="image" />
-					{:else}
-						<img src="./assets/default.png" alt="Photo de {editedUser.prenom}" itemprop="image" />
-					{/if}
-				{:else if clickedAlumni.photoURL?.length > 1}
-					<img src={clickedAlumni.photoURL} alt="Photo de {clickedAlumni.prenom}" itemprop="image" />
+			{#if currentUser}
+				<Photo bind:user={editedUser} bind:canEdit={isCurrentUser} bind:files></Photo>
 				{:else}
-					<img src="./assets/default.png" alt="Photo de {clickedAlumni.prenom}" itemprop="image" />
-				{/if}
-				{#if isCurrentUser}
-					<div class="input-file-container">
-						<input
-							class="input-file"
-							id="my-file"
-							type="file"
-							accept="image/png, image/jpeg, image/webp"
-							bind:files
-						/>
-						<label for="my-file" class="input-file-trigger" tabindex="0"> Modifier... </label>
-					</div>
-				{/if}
-			</div>
-			{#if clickedAlumni.searchingForAJob}
-				<div class="jobIcon" data-tooltip="Je cherche un poste !">
-					<svg height="36px" viewBox="0 0 24 24" width="36px" fill="#6732FF"
-						><path d="M0 0h24v24H0V0z" fill="none" /><path
-							d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"
-						/></svg
-					>
-				</div>
+				<Photo bind:user={clickedAlumni}></Photo>
 			{/if}
+			<JobIcon bind:active={clickedAlumni.searchingForAJob}></JobIcon>
 		</div>
 		<div class="name">
 			<div class="first" itemprop="givenName">{clickedAlumni.prenom}</div>
@@ -190,52 +164,6 @@
 	.modal.alumniInfo aside .photoContainer {
 		height: 150px;
 		width: 150px;
-	}
-
-	.photoContainer .input-file-container {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		z-index: 2;
-		top: 0;
-		left: 0;
-		display: flex;
-		align-items: flex-end;
-	}
-
-	.photoContainer .input-file-trigger {
-		padding: 20px 10px;
-		background: #47474791;
-		color: #fff;
-		font-size: 1em;
-		transition: all 0.4s;
-		cursor: pointer;
-		opacity: 0;
-		width: 100%;
-		box-sizing: border-box;
-		display: flex;
-		justify-content: center;
-		z-index: 2;
-	}
-
-	.photoContainer .input-file {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		padding: 14px 0;
-		opacity: 0;
-		cursor: pointer;
-		height: 100%;
-		z-index: 1;
-	}
-
-	/* quelques styles d'interactions */
-	.photoContainer .input-file:hover + .input-file-trigger,
-	.photoContainer .input-file:focus + .input-file-trigger,
-	.photoContainer .input-file-trigger:hover,
-	.photoContainer .input-file-trigger:focus {
-		opacity: 1;
 	}
 
 	.modal.alumniInfo aside .name {

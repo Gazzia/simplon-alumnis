@@ -3,12 +3,16 @@
 	import 'firebase/firestore';
 	import 'firebase/auth';
 	import 'firebase/storage';
-	
+
 	import {users as alumnis2} from './ocazou';
 	import {fade} from 'svelte/transition';
 	import AlumniEdit from './components/AlumniEdit.svelte';
 	import LoginForm from './components/LoginForm.svelte';
+	import JobIcon from './components/JobIcon.svelte';
+	import Photo from './components/Photo.svelte';
+	import Modal from './components/Modal.svelte';
 	import {contactProps, publicContactProps, displayContact} from './shared/contactprops';
+	import LoginContainer from './components/LoginContainer.svelte';
 
 	var firebaseConfig = {
 		apiKey: 'AIzaSyCGQfjkm9HhqW5On4ehh2O1shWmYw6epwA',
@@ -22,7 +26,6 @@
 	const db = firebase.firestore();
 	const auth = firebase.auth();
 	const bucket = firebase.storage().ref();
-
 
 	let alumnis = [];
 	let modalOpened = null;
@@ -93,48 +96,17 @@
 	</svg>
 </div>
 <main>
-	<aside class="topLoginContainer">
-		{#if currentUser}
-			<button class="connect" on:click={disconnect}>Déconnexion</button>
-			<div class="photoContainer">
-				<div class="imageWrapper">
-					{#if currentUser.photoURL?.length > 1}
-						<img src={currentUser.photoURL} alt="" />
-					{:else}
-						<img src="./assets/default.png" alt="" />
-					{/if}
-				</div>
-			</div>
-		{:else}
-			<button class="connect" on:click={() => (modalOpened = 'login')}>Connexion</button>
-		{/if}
-	</aside>
+	<LoginContainer bind:currentUser {disconnect} bind:modalOpened />
 	<h1>Alumnis Simplon - Java Web</h1>
-	{#if !currentUser}
-		<h2>Profils publics</h2>
-	{:else}
-		<h2>Tous les profils</h2>
-	{/if}
+	<h2>
+		{#if !currentUser}Profils publics{:else}Tous les profils{/if}
+	</h2>
 	<ul class="grid" in:fade={{delay: 400}}>
 		{#each alumniList as alumni}
 			<li itemscope itemtype="https://schema.org/Person">
 				<div class="photoContainer">
-					<div class="imageWrapper">
-						{#if alumni.photoURL?.length > 1}
-							<img src={alumni.photoURL} alt="Photo de {alumni.prenom}" itemprop="image" />
-						{:else}
-							<img src="./assets/default.png" alt="Photo de {alumni.prenom}" itemprop="image" />
-						{/if}
-					</div>
-					{#if alumni.searchingForAJob}
-						<div class="jobIcon" data-tooltip="Je cherche un poste !">
-							<svg height="36px" viewBox="0 0 24 24" width="36px" fill="#6732FF"
-								><path d="M0 0h24v24H0V0z" fill="none" /><path
-									d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"
-								/></svg
-							>
-						</div>
-					{/if}
+					<Photo bind:user={alumni} />
+					<JobIcon bind:active={alumni.searchingForAJob} />
 				</div>
 				<div class="name">
 					<div class="first" itemprop="givenName">{alumni.prenom}</div>
@@ -178,17 +150,12 @@
 		{/each}
 	</ul>
 </main>
-{#if modalOpened == 'alumniInfo'}
-	<div class="modalContainer" transition:fade={{duration: 100}}>
-		<div class="background" on:click={() => (modalOpened = null)} />
-		<AlumniEdit {db} {bucket} bind:clickedAlumni bind:currentUser bind:modalOpened />
-	</div>
-{:else if modalOpened == 'login'}
-	<div class="modalContainer" transition:fade={{duration: 100}}>
-		<div class="background" on:click={() => (modalOpened = null)} />
-		<LoginForm {auth} bind:modalOpened />
-	</div>
-{/if}
+<Modal name="alumniInfo" bind:modalOpened>
+	<AlumniEdit {db} {bucket} bind:clickedAlumni bind:currentUser bind:modalOpened />
+</Modal>
+<Modal name="login" bind:modalOpened>
+	<LoginForm {auth} bind:modalOpened />
+</Modal>
 
 <style>
 	.blobs {
@@ -287,39 +254,5 @@
 	button.button-normal:active {
 		transform: scale(0.87);
 		filter: brightness(1.03);
-	}
-	button.connect {
-		background-color: transparent;
-		border: 1px solid white;
-		border-radius: 6px;
-		font-size: 11px;
-		padding: 5px 10px;
-		text-transform: uppercase;
-		letter-spacing: 0.055em;
-		color: white;
-		opacity: 0.9;
-		cursor: pointer;
-		transition: 0.17s;
-	}
-	button.connect:hover {
-		transform: scale(0.96);
-		opacity: 1;
-	}
-	button.connect:active {
-		transform: scale(0.87);
-		opacity: 1;
-	}
-	.topLoginContainer {
-		position: absolute;
-		top: 15px;
-		right: 15px;
-		color: white;
-		display: flex;
-		gap: 7px;
-		justify-content: center;
-	}
-	.topLoginContainer .photoContainer {
-		height: 25px;
-		width: 25px;
 	}
 </style>
