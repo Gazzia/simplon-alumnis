@@ -69,7 +69,7 @@
 	<div class="text">
 		{#if isCurrentUser}
 			<div class="radios">
-				<div class="radio" class:checked={!editedUser.private} on:click={flipPrivate}>Profil public*</div>
+				<div class="radio" class:checked={!editedUser.private} on:click={flipPrivate}>Profil public<div class="precisions" data-info="Email, cv, github, linkedin, technos, divers">*</div></div>
 				<div class="radio" class:checked={editedUser.searchingForAJob} on:click={flipJob}>
 					Je cherche un taff
 				</div>
@@ -113,7 +113,7 @@
 		{/each}
 		{#if isCurrentUser}
 			<button on:click={parseAndPost}>Valider</button>
-			<div class="explanations">* Données publiques: email, cv, github, linkedin, technos, divers</div>
+			<div class="explanations">* Données publiques pour employeurs: email, cv, github, linkedin, technos, divers</div>
 		{/if}
 	</div>
 </div>
@@ -217,5 +217,10 @@
 	.explanations {
 		font-size: 12px;
 		opacity: 0.7;
+	}
+	.precisions{
+		margin-left:-5px;
+		font-weight: bold;
+		color: #6732ff;
 	}
 </style>
