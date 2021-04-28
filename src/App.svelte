@@ -2,7 +2,6 @@
 	import firebase from 'firebase/app';
 	import 'firebase/firestore';
 	import 'firebase/auth';
-	import 'firebase/analytics';
 	import {users as alumnis2} from './ocazou';
 	import {fade} from 'svelte/transition';
 	import AlumniEdit from './components/AlumniEdit.svelte';
@@ -16,10 +15,8 @@
 		storageBucket: 'alumni-simplon.appspot.com',
 		messagingSenderId: '52608283217',
 		appId: '1:52608283217:web:79fc793d9e14a93c6afe70',
-		measurementId: 'G-BYZVWE9CGE',
 	};
 	firebase.initializeApp(firebaseConfig);
-	firebase.analytics();
 	const db = firebase.firestore();
 	const auth = firebase.auth();
 
