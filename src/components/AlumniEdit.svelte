@@ -9,6 +9,7 @@
 	$: editedUser = Object.assign({}, clickedAlumni);
 	$: files = [];
 	$: newPhotoUrl = null;
+	$: canValidate = files ? newPhotoUrl != null : true;
 
 	function parseAndPost() {
 		db.collection('alumnis')
@@ -166,7 +167,7 @@
 				</div>
 			{/if}
 		{/each}
-		{#if isCurrentUser}
+		{#if isCurrentUser && canValidate}
 			<button on:click={parseAndPost}>Valider</button>
 			<div class="explanations">
 				* Données publiques pour employeurs: email, cv, github, linkedin, technos, divers
