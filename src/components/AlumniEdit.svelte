@@ -154,7 +154,7 @@
 								{clickedAlumni.contact[contact]}
 							</a>
 						{:else if contact == 'steam'}
-							<a href={getValidUrl('steamcommunity.com/id/' + clickedAlumni.contact[contact])}>
+							<a href={getValidUrl('steamidfinder.com/lookup/' + clickedAlumni.contact[contact])}>
 								{clickedAlumni.contact[contact]}
 							</a>
 						{:else}
