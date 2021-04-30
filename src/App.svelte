@@ -14,8 +14,9 @@
 	import {contactProps, publicContactProps, displayContact} from './shared/contactprops';
 	import LoginContainer from './components/LoginContainer.svelte';
 
+	console.log(__proc.env.APIKEY);
 	var firebaseConfig = {
-		apiKey: 'AIzaSyCGQfjkm9HhqW5On4ehh2O1shWmYw6epwA',
+		apiKey: __proc.env.APIKEY,
 		authDomain: 'alumni-simplon.firebaseapp.com',
 		projectId: 'alumni-simplon',
 		storageBucket: 'alumni-simplon.appspot.com',
