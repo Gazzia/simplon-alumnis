@@ -19,7 +19,7 @@
 		projectId: 'alumni-simplon',
 		storageBucket: 'alumni-simplon.appspot.com',
 		messagingSenderId: '52608283217',
-		appId: '1:52608283217:web:79fc793d9e14a93c6afe70',
+		appId: __proc.env.APPID,
 	};
 	firebase.initializeApp(firebaseConfig);
 	const db = firebase.firestore();

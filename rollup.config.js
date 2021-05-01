@@ -9,6 +9,7 @@ import css from 'rollup-plugin-css-only';
 
 const production = !process.env.ROLLUP_WATCH;
 const key = process.env.APIKEY;
+const appid = process.env.APPID;
 
 function serve() {
 	let server;
@@ -44,6 +45,7 @@ export default {
 			__proc: JSON.stringify({
 				env: {
 				  APIKEY: key,
+				  APPID: appid,
 				  ...config().parsed // attached the .env config
 				}
 			  }),
