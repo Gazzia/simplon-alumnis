@@ -271,6 +271,7 @@ button:focus {
 	height: 18px;
 	width: 18px;
 	fill: #fa2358;
+	margin-top:0.7px;
 }
 
 .name {
