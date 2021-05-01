@@ -1,11 +1,15 @@
 <script>
+	// Firebase imports
 	import firebase from 'firebase/app';
 	import 'firebase/firestore';
 	import 'firebase/auth';
 	import 'firebase/storage';
 
+	// Misc imports
 	import {fade} from 'svelte/transition';
 	import {contactProps, publicContactProps, displayContact} from './shared/contactprops';
+
+	// Components imports
 	import AlumniEdit from './components/AlumniEdit.svelte';
 	import LoginForm from './components/LoginForm.svelte';
 	import JobIcon from './components/JobIcon.svelte';
@@ -13,6 +17,7 @@
 	import Modal from './components/Modal.svelte';
 	import LoginContainer from './components/LoginContainer.svelte';
 
+	// Firebase init
 	var firebaseConfig = {
 		apiKey: __proc.env.APIKEY,
 		authDomain: 'alumni-simplon.firebaseapp.com',
@@ -25,35 +30,41 @@
 	const db = firebase.firestore();
 	const auth = firebase.auth();
 	const bucket = firebase.storage().ref();
+	auth.onAuthStateChanged(handleAuthChange);
+	db.collection('alumnis').onSnapshot(setAlumnisFromSnap);
 
+	// Components imports
 	let alumnis = [];
 	let modalOpened = null;
 	let clickedAlumni = null;
 	$: currentUser = null;
 	$: alumniList = currentUser ? alumnis : alumnis.filter((a) => !a.private);
-	auth.onAuthStateChanged((user) => {
+
+	// Handle user authentication state change (login/logout..)
+	function handleAuthChange(user) {
 		if (!user) {
 			currentUser = null;
 		} else {
+			// if user info is already provided by the alumnis snapshot, take it from there
 			const correspondingUser = alumnis.find((a) => a.id == user.uid);
 			if (correspondingUser) {
 				currentUser = correspondingUser;
 			} else {
-				db.collection('alumnis')
-					.doc(user.uid)
-					.get()
-					.then((doc) => {
-						currentUser = doc.data();
-					});
+				// else go get it inside the database big boy
+				const userRef = db.collection('alumnis').doc(user.uid);
+				userRef.get().then((doc) => {
+					currentUser = doc.data();
+				});
 			}
 		}
-	});
+	}
 
 	function disconnect() {
 		auth.signOut();
 	}
 
-	db.collection('alumnis').onSnapshot((sn) => {
+	// Handle firestore snapshots of alumni collection
+	function setAlumnisFromSnap(sn) {
 		const newAlumnis = [];
 		sn.forEach((doc) => {
 			newAlumnis.push(doc.data());
@@ -64,15 +75,21 @@
 			else if (a.searchingForAJob) return -1;
 			else return 1;
 		});
-	});
-
-	function getAlumniFilledContactsLength(alumni) {
-		return Object.keys(alumni.contact).filter((k) => alumni.contact[k]?.length > 0).length;
 	}
+
+	// Get length of all contacts infos that have been filled by alumni
+	function getAlumniFilledContactsLength(alumni) {
+		const contactProps = Object.keys(alumni.contact);
+		const filled = contactProps.filter((p) => alumni.contact[p]?.length > 0);
+		return filled.length;
+	}
+
+	// Same deal but only for public infos
 	function getAlumniFilledPublicContactsLength(alumni) {
-		return Object.keys(alumni.contact).filter((k) => {
-			return publicContactProps.includes(k) && alumni.contact[k]?.length > 0;
-		}).length;
+		const contactProps = Object.keys(alumni.contact);
+		const filled = contactProps.filter((p) => alumni.contact[p]?.length > 0);
+		const filledAndPublic = filled.filter((k) => publicContactProps.includes(k));
+		return filledAndPublic.length;
 	}
 </script>
 
