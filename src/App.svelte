@@ -4,14 +4,13 @@
 	import 'firebase/auth';
 	import 'firebase/storage';
 
-	import {users as alumnis2} from './ocazou';
 	import {fade} from 'svelte/transition';
+	import {contactProps, publicContactProps, displayContact} from './shared/contactprops';
 	import AlumniEdit from './components/AlumniEdit.svelte';
 	import LoginForm from './components/LoginForm.svelte';
 	import JobIcon from './components/JobIcon.svelte';
 	import Photo from './components/Photo.svelte';
 	import Modal from './components/Modal.svelte';
-	import {contactProps, publicContactProps, displayContact} from './shared/contactprops';
 	import LoginContainer from './components/LoginContainer.svelte';
 
 	var firebaseConfig = {
