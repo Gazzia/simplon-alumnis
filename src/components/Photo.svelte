@@ -1,7 +1,7 @@
 <script>
 	export let user;
 	export let files = [];
-	export let canEdit;
+	export let canEdit = false;
 </script>
 
 <div class="imageWrapper">
