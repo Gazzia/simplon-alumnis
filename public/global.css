@@ -242,8 +242,8 @@ button:focus {
 	object-fit: cover;
 }
 
-.photoContainer .jobIcon {
-	background-color: white;
+
+.jobIcon {
 	width: 18px;
 	height: 18px;
 	display: flex;
@@ -252,10 +252,25 @@ button:focus {
 	position: absolute;
 	bottom: 4px;
 	right: 5px;
-	box-shadow: 0 2px 2px #00000029;
 	padding: 4px;
-	border-radius: 50%;
 	z-index: 2;
+	bottom: 4px;
+	right: 5px;
+	background-color: white;
+	box-shadow: 0 2px 2px #00000029;
+	border-radius: 50%;
+}
+
+.privateIcon {
+	width: 18px;
+	height: 18px;
+	display: inline-block;
+	margin-left: 6px;
+}
+.privateIcon svg {
+	height: 18px;
+	width: 18px;
+	fill: #fa2358;
 }
 
 .name {

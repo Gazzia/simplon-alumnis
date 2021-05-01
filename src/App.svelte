@@ -13,6 +13,7 @@
 	import AlumniEdit from './components/AlumniEdit.svelte';
 	import LoginForm from './components/LoginForm.svelte';
 	import JobIcon from './components/JobIcon.svelte';
+	import PrivateIcon from './components/PrivateIcon.svelte';
 	import Photo from './components/Photo.svelte';
 	import Modal from './components/Modal.svelte';
 	import LoginContainer from './components/LoginContainer.svelte';
@@ -142,6 +143,7 @@
 					{:else}
 						({getAlumniFilledPublicContactsLength(alumni)})
 					{/if}
+					<PrivateIcon bind:privateProfile={alumni.private} bind:currentUser />
 				</button>
 				<div class="icons">
 					{#if currentUser}
@@ -216,7 +218,7 @@
 	}
 	ul.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(163px, 1fr));
 		gap: 30px;
 		padding: 0;
 	}
