@@ -1,18 +1,23 @@
 <script>
 	import {contactProps, displayContact, publicContactProps} from '../shared/contactprops';
-	import JobIcon from "./JobIcon.svelte"
+	import JobIcon from './JobIcon.svelte';
 	import Photo from './Photo.svelte';
+
+	// props passed down from parent
 	export let clickedAlumni;
 	export let currentUser;
 	export let modalOpened;
 	export let db;
 	export let bucket;
+
+	// dynamic values
 	$: isCurrentUser = currentUser && currentUser.id == clickedAlumni.id;
 	$: editedUser = Object.assign({}, clickedAlumni);
 	$: files = [];
 	$: canValidate = files.length > 0 ? false : true;
-	$: if(files.length > 0) uploadPicture();
+	$: if (files.length > 0) uploadPicture();
 
+	// post alumni modifications
 	function parseAndPost() {
 		db.collection('alumnis')
 			.doc(editedUser.id)
@@ -25,7 +30,8 @@
 			});
 	}
 
-	export const getValidUrl = (url = '') => {
+	// auto-complete urls missing http/https
+	function getValidUrl(url = '') {
 		let newUrl = window.decodeURIComponent(url);
 		newUrl = newUrl.trim().replace(/\s/g, '');
 
@@ -51,23 +57,23 @@
 		uploadTask.on(
 			'state_changed',
 			() => {},
-			(err) => {
-				console.error(err);
-			},
-			() => {
-				bucket
-					.child(editedUser.id + '_250x250.webp')
-					.getDownloadURL()
-					.then((url) => {
-						console.log('URL got');
-						editedUser.photoURL = url;
-						files = [];
-					})
-					.catch((err) => {
-						console.error(err);
-					});
-			}
+			console.error,
+			onUploadResponse
 		);
+	}
+
+	// when upload has ended nicely,
+	// get url of that file and set it as the alumni's photo
+	function onUploadResponse() {
+		bucket
+			.child(editedUser.id + '_250x250.webp')
+			.getDownloadURL()
+			.then((url) => {
+				console.log('Photo set');
+				editedUser.photoURL = url;
+				files = [];
+			})
+			.catch(console.error);
 	}
 </script>
 
@@ -75,11 +81,11 @@
 	<aside class="left">
 		<div class="photoContainer">
 			{#if currentUser}
-				<Photo bind:user={editedUser} bind:canEdit={isCurrentUser} bind:files></Photo>
-				{:else}
-				<Photo bind:user={clickedAlumni}></Photo>
+				<Photo bind:user={editedUser} bind:canEdit={isCurrentUser} bind:files />
+			{:else}
+				<Photo bind:user={clickedAlumni} />
 			{/if}
-			<JobIcon bind:active={clickedAlumni.searchingForAJob}></JobIcon>
+			<JobIcon bind:active={clickedAlumni.searchingForAJob} />
 		</div>
 		<div class="name">
 			<div class="first" itemprop="givenName">{clickedAlumni.prenom}</div>
